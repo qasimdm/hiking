@@ -1,37 +1,45 @@
 var express = require('express');
-var app = express();
 var bodyParser = require('body-parser')
+var app = express();
 var fs = require("fs");
-var file = 'bundle.text';
+var file = 'bundle.json';
 
 app.use( bodyParser.text() )
 
-var bundle = {
+//just for testing
+var bundle1 = {
    "bundle4" : {
-      "name" : "mohit",
-      "password" : "password4",
-      "profession" : "teacher",
-      "id": 4
+      "places" : "Övik",
+	  "name" : "path4",
+	  "info" : "path description",
+	  "length" : "5",
+	  "polyline" : "lat-lon",
+	  "duration" : "8",
+	  "image" : "null",
+	  "id": 4
    }
 }
 
 app.post('/addPlace', function (req, res) {
    // First read existing data.
    fs.readFile( __dirname + "/" + file, 'utf8', function (err, data) {
-       data = JSON.parse( data );
+	   if(err) throw err; 
+       
+	   data = JSON.parse(data);
 	   
-	   //data.push(bundle);
-       //data["bundle4"] = bundle["bundle4"];
-	   //JSON.stringify(req.body);
-	   
-	   console.log(req.body);
+       //data["bundle4"] = bundle1["bundle4"];
 	   data["bundle4"] = req.body;	//adding obj to the bundle file
-   fs.writeFile(file, data, function(err){
-	   if(err) throw err;
-	   console.log('Bundle added to the file');
-   });
-       //console.log( data );
-       res.end( data);
+	   console.log(data);
+	   var strData = JSON.stringify(data);
+	   //console.log(req.body);
+	   //var strBody = JSON.stringify(req.body);
+	   
+		fs.writeFile(file, strData, function(err){
+			if(err) throw err;
+			console.log('Bundle added to the file');
+		});
+       console.log(strData);
+	   //res.end(JSON.stringify(data));
    });
 })
 
