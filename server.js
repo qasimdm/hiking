@@ -1,7 +1,10 @@
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser')
 var fs = require("fs");
-var file = 'bundle.json';
+var file = 'bundle.text';
+
+app.use( bodyParser.text() )
 
 var bundle = {
    "bundle4" : {
@@ -16,17 +19,19 @@ app.post('/addPlace', function (req, res) {
    // First read existing data.
    fs.readFile( __dirname + "/" + file, 'utf8', function (err, data) {
        data = JSON.parse( data );
-	   //now data is an obj, so we can access its properties
+	   
 	   //data.push(bundle);
        //data["bundle4"] = bundle["bundle4"];
+	   //JSON.stringify(req.body);
+	   
 	   console.log(req.body);
-	   data["bundle4"] = req.body;
-   fs.writeFile(file, JSON.stringify(data), function(err){
+	   data["bundle4"] = req.body;	//adding obj to the bundle file
+   fs.writeFile(file, data, function(err){
 	   if(err) throw err;
 	   console.log('Bundle added to the file');
    });
        //console.log( data );
-       res.end( JSON.stringify(data));
+       res.end( data);
    });
 })
 

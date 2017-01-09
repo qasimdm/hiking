@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+      #map {
+        width: 100%;
+        height: 400px;
+        background-color: grey;
+      }
+    </style>
+</head>
+
+<body class="htmlNoPages">
+    <h3>Google Maps</h3>
+    <div id="map"></div>
+    <script>
+      function initMap() {
+        var uluru = {lat: -25.363, lng: 131.044};
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 4,
+          center: uluru
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map
+        });
+      }
+	  
+	  function readBundle() {
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			document.getElementById("demo").innerHTML = this.responseText;
+		}
+	  };
+	  xhttp.open("GET", "http://localhost:8081/place/2", true);
+	  xhttp.send();
+	  }
+	
+	  function addPlace(){
+		var params = formDataToJson();
+		var http = new XMLHttpRequest();
+		http.open("POST", "http://localhost:8081/addPlace", true);
+		http.setRequestHeader("Content-type", "text/plain"); //application/*+json
+		http.onreadystatechange = function() {
+            //console.log('onreadystatechange');
+            if (http.readyState == 4 && http.status == 200) {
+                alert(http.responseText);
+            }
+            else {
+                //console.log('readyState=' + http.readyState + ', status: ' + //http.status);
+            }
+        }
+	
+        console.log('sending...')
+        http.send(params);
+        console.log('end');
+	  }
+	  function formDataToJson(){
+	    var place = document.placeForm.place.value;
+		var name = document.placeForm.name.value;
+		var info = document.placeForm.info.value;
+		var description = document.placeForm.description.value;
+		var length = document.placeForm.length.value;
+		var polyline = document.placeForm.polyline.value;
+		var duration = document.placeForm.duration.value;
+		
+		var text = '{'+'"places"'+':'+'"'+place+'"'+','+'"name"'+':'+'"'+name+'"'+','+'"info"'+':'+'"'+info+'"'+','+'"description"'+':'+'"'+description+'"'+','+'"length"'+':'+'"'+length+'"'+','+'"polyline"'+':'+'"'+polyline+'"'+','+'"duration"'+':'+'"'+duration+'"'+'}';
+		//var obj = JSON.parse(text);
+		return text;
+		//window.alert(JSON.stringify(obj));
+	  }
+	
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBhkK_41Iee-HiaRNv3fSTEaYY_zXQGjho&callback=initMap">
+    </script>
+	<div id="read">
+		<h1>Form Demo</h1>
+	</div>
+    
+	
+	<form name="placeForm" id="placeForm">
+      <fieldset>
+        <legend>Form</legend>
+        <p>
+          <label>places</label>
+          <input type = "text" id = "place" />
+        </p>
+        <p>
+          <label>name</label>
+		  <input type = "text" id = "name" />
+          
+        </p>
+		<p>
+          <label>info</label>
+		  <input type = "text" id = "info" />
+          
+        </p>
+        <p>
+          <label>description</label>
+          <textarea id = "description"
+                  rows = "3"
+                  cols = "80"></textarea>
+        </p>
+		<p>
+          <label>length</label>
+		  <input type = "text" id = "length" />
+        </p>
+		<p>
+          <label>polyline</label>
+		  <input type = "text" id = "polyline" />
+        </p>
+		<p>
+          <label>duration</label>
+		  <input type = "text" id = "duration" />
+        </p>
+		
+		<input type="button" value="Submit" onclick="addPlace()">
+      </fieldset>
+    </form>
+	
+	
+	<div id="demo">
+		<h2>Let AJAX change this text</h2>
+	</div>
+	<button type="button" onclick="readBundle()">Get Content</button>
+	
+	
+
+</body>
+
+</html>
